@@ -1,10 +1,27 @@
-#load data
-SQltable <- 'p_csi_tbs_t.fl_mGMBforecast_v1'
-
+library('ebaytd')
 c <- teradataConnect()
-sqlPath <- 'C:/Users/frankli/Dropbox (eBayMob&Eng)/FrankL/Rproj/appVersGMB/GMB_appVers_Date.sql'
 
-sqlQuery <- paste(readLines(sqlPath), collapse=" ")
+#setup query & table
+sqlTable <- 'p_csi_tbs_t.fl_dly_mGMBforecast_s1'
+sqlQuery <- 'select * from :table'
+sqlQuery <- gsub(':table',sqlTable,sqlQuery); sqlQuery
+
+#load data
 df <- dbGetQuery(c,sqlQuery)
 df2 <- df
+
+#check
+minDate <- min(df$created_dt); minDate
+maxDate <- max(df$created_dt); maxDate
+days <- as.numeric(maxDate - minDate - 1); days
+
+
+#incomplete- load query directly from github
+#library(RCurl)
+#wklyGMBurl <- 'https://github.com/li-frank/mForecast/blob/master/wkly_mGMB.sql'
+#test <- getURL(wklyGMBur)
+
+
+
 ##autorefresh numbers
+
