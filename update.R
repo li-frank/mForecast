@@ -1,17 +1,10 @@
-#?source("load.R")
-
-c <- teradataConnect()
-
-#load table
-sqlTable <- 'p_csi_tbs_t.fl_dly_mGMBforecast_s1'
-sqlQuery <- 'select * from :table'
-sqlQuery <- gsub(sqlQuery,':table',sqlTable)
-
-
+#pull existing table for base
+source("load.R")
+head(df,20)
 
 #load existing data
 #SQltable <- 'p_csi_tbs_t.fl_mGMBforecast_v1'
-sqlPath <- 'C:/Users/frankli/Dropbox (eBayMob&Eng)/FrankL/Forecast/ForecastModel/mForecast/dly_mGMB.sql'
+sqlPath <- 'C:/Users/frankli/Dropbox (eBayMob&Eng)/FrankL/Forecast/ForecastModel/mForecast/dly_mGMB_s1.sql'
 sqlQuery <- paste(readLines(sqlPath), collapse=" ")
 df <- dbGetQuery(c,sqlQuery)
 df2 <- df
