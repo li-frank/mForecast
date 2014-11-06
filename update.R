@@ -10,6 +10,8 @@ daysReload <- 31
 reloadStart <- maxDate-31; reloadStart
 reloadStart <- paste0("'", reloadStart ,"'"); reloadStart
 reloadEnd <- Sys.Date()-2; reloadEnd
+reloadEnd <- paste0("'", reloadEnd ,"'"); reloadEnd
+
 ##remove
 removePath <- 'C:/Users/frankli/Dropbox (eBayMob&Eng)/FrankL/Forecast/ForecastModel/mForecast/dly_mGMB_s1_remove.sql'
 removeQuery <- paste(readLines(removePath), collapse=" ")
@@ -19,6 +21,7 @@ removed <- dbSendQuery(c,removeQuery)
 reloadPath <- 'C:/Users/frankli/Dropbox (eBayMob&Eng)/FrankL/Forecast/ForecastModel/mForecast/dly_mGMB_s1_reload.sql'
 reloadQuery <- paste(readLines(reloadPath), collapse=" ")
 reloadQuery <- gsub(':start_dt',reloadStart,reloadQuery); reloadQuery
+reloadQuery <- gsub(':end_dt',reloadEnd,reloadQuery); reloadQuery
 reloaded <- dbSendQuery(c,reloadQuery)
 
 #pull new data
