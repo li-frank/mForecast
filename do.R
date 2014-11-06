@@ -1,4 +1,7 @@
-Source("load.R")
-#if update, then Source("updateLoad.R") (no load.R)
+#only load existing data: Source("load.R")
+Source("updateLoad.R")
+Source("clean.R")
+
+Source("plots.R")
 #clean
 #forecast
