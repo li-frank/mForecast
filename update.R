@@ -1,3 +1,5 @@
+library('dplyr')
+
 #pull existing table for base
 source("load.R")
 head(df)
@@ -30,3 +32,7 @@ head(df,20)
 minDate
 maxDate
 days
+
+#check
+sumDate <- ddply(df,.(created_dt),summarize,gmb=sum(gmb_plan))
+plot(sumDate$created_dt,sumDate$gmb)
