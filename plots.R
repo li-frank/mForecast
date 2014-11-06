@@ -13,3 +13,7 @@ plot_mobile.DatePlat <- ggplot(mobile.DatePlat,
 #plot mobileAgg gmb over time
 plot_mobile.Date <- ggplot(mobile.Date,
                        aes(x=created_dt,y=gmb)) + geom_line(); plot_mobile.Date
+
+#plot pcAgg gmb over time
+plot_pc.Date <- ggplot(pc.Date,
+                       aes(x=created_dt,y=gmb)) + geom_line(); plot_pc.Date
