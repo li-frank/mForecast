@@ -8,7 +8,7 @@ days
 #remove, reload
 daysReload <- 31
 reloadStart <- maxDate-31; reloadStart
-reloadEnd <- Sys.Date()-2
+reloadEnd <- Sys.Date()-2; reloadEnd
 ##remove
 removePath <- 'C:/Users/frankli/Dropbox (eBayMob&Eng)/FrankL/Forecast/ForecastModel/mForecast/dly_mGMB_s1_remove.sql'
 removeQuery <- paste(readLines(removePath), collapse=" ")
