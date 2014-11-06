@@ -1,12 +1,15 @@
 #pull existing table for base
 source("load.R")
 head(df,20)
+minDate
+maxDate
+days
 
-#load existing data
-#SQltable <- 'p_csi_tbs_t.fl_mGMBforecast_v1'
-sqlPath <- 'C:/Users/frankli/Dropbox (eBayMob&Eng)/FrankL/Forecast/ForecastModel/mForecast/dly_mGMB_s1.sql'
+#remove, reload
+sqlPath <- 'C:/Users/frankli/Dropbox (eBayMob&Eng)/FrankL/Forecast/ForecastModel/mForecast/dly_mGMB_s1_remove.sql'
 sqlQuery <- paste(readLines(sqlPath), collapse=" ")
-df <- dbGetQuery(c,sqlQuery)
+sqlQuery <- gsub(':start_dt',sqlTable,sqlQuery); sqlQuery
+remove <- dbGetQuery(c,sqlQuery)
 df2 <- df
 
 #update PET table
