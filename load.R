@@ -11,9 +11,10 @@ df <- dbGetQuery(c,sqlQuery)
 df2 <- df
 
 #check
+df$created_dt <- as.Date(df$created_dt)
 minDate <- min(df$created_dt); minDate
 maxDate <- max(df$created_dt); maxDate
-days <- as.numeric(maxDate - minDate - 1); days
+days <- as.numeric(maxDate - minDate + 1); days
 
 
 #incomplete- load query directly from github
