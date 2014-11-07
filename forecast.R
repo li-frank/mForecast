@@ -1,4 +1,6 @@
 #mobileAgg df: mobile.Date
+mobile.ts <- ts(mobile.Date$created_dt, frequency=52*7, start=c(2010,1))
+plot_mobile.ts <- plot.ts(mobile.ts[,2])
 
 #time series
 Creating a time series
