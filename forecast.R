@@ -14,10 +14,6 @@ stlf_mobile_BC$model
 
 ets_mobile <- ets(mobile.ts)
 
-arima_mobile <- auto.arima(mobile.ts,seasonal=TRUE)
-plot(forecast(arima_mobile))
-arima_mobile.ts <- ts(arima_mobile, frequency=364,start=c(2010,1,1))
-
 #with robust options to remove outliers
 stlf_mobile.ts_BC_rb <- stlf(mobile.ts,lambda=BoxCox.lambda(mobile.ts),robust=TRUE)
 plot(stlf_mobile.ts_BC_rb)
@@ -25,6 +21,12 @@ stlf_mobile.ts_BC_rb$model
 #breakdown
 stl_mobile.ts <- stl(mobile.ts,s.window="periodic",robust=TRUE)
 plot(stl_mobile.ts)
+
+#########################################
+
+arima_mobile <- auto.arima(mobile.ts,seasonal=TRUE)
+plot(forecast(arima_mobile))
+arima_mobile.ts <- ts(arima_mobile, frequency=364,start=c(2010,1,1))
 
 #########################################
 # #MA of stlf plot
