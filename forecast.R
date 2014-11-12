@@ -14,7 +14,7 @@ stlf_mobile_BC$model
 
 ets_mobile <- ets(mobile.ts)
 
-arima_mobile <- auto.arima(mobile.ts,seasonal=TRUE,D=52*7)
+arima_mobile <- auto.arima(mobile.ts,seasonal=TRUE)
 plot(forecast(arima_mobile))
 arima_mobile.ts <- ts(arima_mobile, frequency=364,start=c(2010,1,1))
 
