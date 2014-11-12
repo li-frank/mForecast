@@ -4,18 +4,19 @@ library('forecast')
 mobile.ts <- ts(mobile.Date$gmb, frequency=52*7, start=c(2010,1))
 plot_mobile.ts <- plot.ts(mobile.ts)
 
-stlf_mobile.ts <- stlf(mobile.ts)
+stlf_mobile <- stlf(mobile.ts)
 plot(stlf_mobile.ts)
-stlf_mobile.ts$model
+stlf_mobile$model
 
-stlf_mobile.ts_BC <- stlf(mobile.ts,lambda=BoxCox.lambda(mobile.ts))
+stlf_mobile_BC <- stlf(mobile.ts,lambda=BoxCox.lambda(mobile.ts))
 plot(stlf_mobile.ts_BC)
-stlf_mobile.ts_BC$model
+stlf_mobile_BC$model
 
-ets_mobile.ts <- ets(mobile.ts)
+ets_mobile <- ets(mobile.ts)
 
-arima_mobile.ts <- auto.arima(mobile.ts,seasonal=TRUE)
-plot(forecast(arima_mobile.ts))
+arima_mobile <- auto.arima(mobile.ts,seasonal=TRUE,D=52*7)
+plot(forecast(arima_mobile))
+arima_mobile.ts <- ts(arima_mobile, frequency=364,start=c(2010,1,1))
 
 #with robust options to remove outliers
 stlf_mobile.ts_BC_rb <- stlf(mobile.ts,lambda=BoxCox.lambda(mobile.ts),robust=TRUE)
