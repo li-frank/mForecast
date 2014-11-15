@@ -45,15 +45,30 @@ endYear <- as.numeric(format(maxDate, "%Y"))
 years <- endYear - startYear + 1
 
 for (i in 1:years-3)){
-  mobile_cv.train <- ts(mobile.ts[(364*(i-1)+1):(364*(i+1)+1)],frequency=364)
-  mobile_cv.test <- ts(mobile.ts[(364*(i-1)+1):(364*(i+1)+1)],frequency=364)
+  trainStart <- 364*(i-1)+1
+  trainEnd <- start + 364*2
+  testEnd <- length(mobile.ts)
   
-  stlf_mobile_BC.cv <- stlf(mobile_cv.ts,lambda=BoxCox.lambda(mobile_cv.ts))
-  stlf_mobile.ts_BC_rb.cv <- stlf(mobile_cv.ts,lambda=BoxCox.lambda(mobile_cv.ts),robust=TRUE)
-  arima_mobile.cv <- auto.arima(mobile_cv.ts,seasonal=TRUE)
-  stlf_mobile.cv <- stlf(mobile_cv.ts)
+  mobile_cv.train <- ts(mobile.ts[trainStart:trainEnd],frequency=364)
+  mobile_cv.test <- ts(mobile.ts[(trainEnd+1):testEnd],frequency=364)
   
-  stlf_mobile.cv.a <- accuracy(stlf_mobile.cv,)
+  stlf_mobile_BC.cv <- stlf(mobile_cv.train,lambda=BoxCox.lambda(mobile_cv.train))
+  stlf_mobile.ts_BC_rb.cv <- stlf(mobile_cv.train,lambda=BoxCox.lambda(mobile_cv.train),robust=TRUE)
+  arima_mobile.cv <- auto.arima(mobile_cv.train,seasonal=TRUE)
+  stlf_mobile.cv <- stlf(mobile_cv.train)
+  
+  stlf_mobile_BC.cv.a <- accuracy(stlf_mobile_BC.cv,mobile_cv.test)
+  stlf_mobile.ts_BC_rb.cv.a <- accuracy(stlf_mobile.ts_BC_rb.cv,mobile_cv.test)
+  arima_mobile.cv.a <- accuracy( arima_mobile.cv,mobile_cv.test)
+  stlf_mobile.cv.a <- accuracy(stlf_mobile.cv,mobile_cv.test)
+  
+  plot(stlf_mobile.cv, ylim=c(0,120000000))
+  lines(mobile_cv.test)
+  
+  plot(stlf_mobile.ts_BC_rb.cv,ylim=c(0,120000000))
+  lines(mobile_cv.test)
+  
+  
 }
 
 
