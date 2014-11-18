@@ -1,8 +1,22 @@
 library('forecast')
 
-#STLF: mobileAgg df: mobile.Date
+#########################################
 mobile.ts <- ts(mobile.Date$gmb, frequency=52*7, start=c(2010,1))
 plot_mobile.ts <- plot.ts(mobile.ts)
+
+#mobile agg forecast
+arima_mobile <- auto.arima(mobile.ts,seasonal=TRUE)
+plot(forecast(arima_mobile))
+arima_mobile.ts <- ts(arima_mobile, frequency=364,start=c(2010,1,1))
+accuracy(arima_mobile)
+
+#by platform and country
+##dataset: mobile.cntryPlat
+unique(mobile.cntryPlat$country)
+unique(mobile.cntryPlat$platform)
+
+test <- summarise(mobile.cntryPlat, auto.arima(gmb))
+#########################################
 
 #forecast models in order of increasing MAPE
 stlf_mobile_BC <- stlf(mobile.ts,lambda=BoxCox.lambda(mobile.ts))
@@ -16,12 +30,7 @@ plot(stlf_mobile.ts_BC_rb)
 stlf_mobile.ts_BC_rb$model
 accuracy(stlf_mobile.ts_BC_rb)
 
-#########################################
-arima_mobile <- auto.arima(mobile.ts,seasonal=TRUE)
-plot(forecast(arima_mobile))
-arima_mobile.ts <- ts(arima_mobile, frequency=364,start=c(2010,1,1))
-accuracy(arima_mobile)
-#########################################
+
 
 stlf_mobile <- stlf(mobile.ts)
 plot(stlf_mobile.ts)
@@ -59,7 +68,7 @@ for (i in 1:years-3)){
   
   stlf_mobile_BC.cv.a <- accuracy(stlf_mobile_BC.cv,mobile_cv.test)
   stlf_mobile.ts_BC_rb.cv.a <- accuracy(stlf_mobile.ts_BC_rb.cv,mobile_cv.test)
-  arima_mobile.cv.a <- accuracy(arima_mobile.cv,mobile_cv.test)
+  arima_mobile.cv.a <- accuracy(forecast(arima_mobile.cv),mobile_cv.test)
   stlf_mobile.cv.a <- accuracy(stlf_mobile.cv,mobile_cv.test)
   #  
   arima_mobile <- auto.arima(mobile.ts,seasonal=TRUE)
@@ -74,7 +83,9 @@ for (i in 1:years-3)){
   
   plot(stlf_mobile_BC.cv,ylim=c(0,120000000))
   lines(mobile_cv.test)
-  
+ 
+  plot(forecast(arima_mobile.cv),ylim=c(0,120000000))
+  lines(mobile_cv.test)
 }
 
 

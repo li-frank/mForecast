@@ -15,7 +15,7 @@ mobile.DatePlat <- summarise(mobile.gbDatePlat,gmb=sum(gmb_plan)); tail(mobile.D
 ##mobile gmb: platform & country over time
 mobile <- df[df$platform != 'Core Site on PC',]
 mobile.gbCntryPlat <- group_by(mobile,created_dt,country, platform)
-mobile.cntryPlat <- summarise(mobile.gbCntryPlat,gmb=sum(gmb_plan)); tail(mobile.cntryPlat)
+mobile.cntryPlat <- summarise(mobile.gbCntryPlat,gmb=sum(gmb_plan)); mobile.cntryPlat[mobile.cntryPlat$created_dt==maxDate & mobile.cntryPlat$country=='US',]
 
 ##mobile aggregate
 mobile.gbDate <- group_by(mobile,created_dt)
