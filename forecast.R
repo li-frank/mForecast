@@ -59,15 +59,21 @@ for (i in 1:years-3)){
   
   stlf_mobile_BC.cv.a <- accuracy(stlf_mobile_BC.cv,mobile_cv.test)
   stlf_mobile.ts_BC_rb.cv.a <- accuracy(stlf_mobile.ts_BC_rb.cv,mobile_cv.test)
-  arima_mobile.cv.a <- accuracy( arima_mobile.cv,mobile_cv.test)
+  arima_mobile.cv.a <- accuracy(arima_mobile.cv,mobile_cv.test)
   stlf_mobile.cv.a <- accuracy(stlf_mobile.cv,mobile_cv.test)
-  
+  #  
+  arima_mobile <- auto.arima(mobile.ts,seasonal=TRUE)
+  plot(forecast(arima_mobile))
+  accuracy(arima_mobile)  
+  #
   plot(stlf_mobile.cv, ylim=c(0,120000000))
   lines(mobile_cv.test)
   
   plot(stlf_mobile.ts_BC_rb.cv,ylim=c(0,120000000))
   lines(mobile_cv.test)
   
+  plot(stlf_mobile_BC.cv,ylim=c(0,120000000))
+  lines(mobile_cv.test)
   
 }
 
