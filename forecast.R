@@ -5,7 +5,7 @@ mobile.ts <- ts(mobile.Date$gmb, frequency=52*7, start=c(2010,1))
 plot_mobile.ts <- plot.ts(mobile.ts)
 
 #mobile agg forecast
-arima_mobile <- auto.arima(mobile.ts,seasonal=TRUE)
+arima_mobile <- auto.arima(mobile.ts,seasonal=TRUE,stepwise=FALSE,approx=FALSE)
 plot(forecast(arima_mobile))
 arima_mobile.ts <- ts(arima_mobile, frequency=364,start=c(2010,1,1))
 accuracy(arima_mobile)
@@ -15,7 +15,13 @@ accuracy(arima_mobile)
 unique(mobile.cntryPlat$country)
 unique(mobile.cntryPlat$platform)
 
-test <- summarise(mobile.cntryPlat, auto.arima(gmb))
+test <- subset(mobile, created_dt >= 2012-11-01 
+               & (country=='US'|country=='AU')
+               & (platform=='iPhone App'))
+
+test.gb <- group_by(test,created_dt,country, platform)
+
+testarima <- summarise(test.gb, gmb=auto.arima(test.gb$gmb_plan))
 #########################################
 
 #forecast models in order of increasing MAPE

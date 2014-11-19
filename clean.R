@@ -13,21 +13,21 @@ mobile <- df[df$platform != 'Core Site on PC',]
 
 ##mobile gmb: platform over time
 mobile.DatePlat <- ddply(mobile,
-                         c("created_dt","platform"),
+                         .(created_dt,platform),
                          summarise,gmb=sum(gmb_plan))
 #mobile.gbDatePlat <- group_by(mobile,.groups=c(created_dt, platform))
 #mobile.DatePlat <- summarise(mobile.gbDatePlat,gmb=sum(gmb_plan)); tail(mobile.DatePlat)
 
 ##mobile gmb: country over time
 mobile.DateCntry <- ddply(mobile,
-                         c("created_dt","country"),
+                         .(created_dt,country),
                          summarise,gmb=sum(gmb_plan))
 #mobile.gbCntryPlat <- group_by(mobile,.groups=(created_dt, country))
 #mobile.DateCntry <- summarise(mobile.gbDatePlat,gmb=sum(gmb_plan)); tail(mobile.DatePlat)
 
 ##mobile gmb: platform & country over time
 mobile.PlatCntry <- ddply(mobile,
-                          c("created_dt","country","platform"),
+                          .(created_dt,country,platform),
                           summarise,gmb=sum(gmb_plan))
 #mobile.gbCntryPlat <- group_by(mobile,created_dt,country, platform)
 #mobile.cntryPlat <- summarise(mobile.gbCntryPlat,gmb=sum(gmb_plan)); mobile.cntryPlat[mobile.cntryPlat$created_dt==maxDate & mobile.cntryPlat$country=='US',]
