@@ -1,4 +1,4 @@
-library('dplyr')
+library(plyr); library(dplyr)
 
 #pull existing table for base
 source("load.R")

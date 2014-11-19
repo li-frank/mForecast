@@ -1,5 +1,5 @@
 library('ggplot2')
-dev.off()
+#dev.off()
 #plot gmb over time
 plot_df.Date <- ggplot(df.Date,
                        aes(x=created_dt,y=gmb, color=format(created_dt,"%Y"))) + geom_line(); plot_df.Date
