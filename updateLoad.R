@@ -1,5 +1,3 @@
-library(plyr); library(dplyr)
-
 #pull existing table for base
 source("load.R")
 head(df)
@@ -25,10 +23,3 @@ reloadQuery <- paste(readLines(reloadPath), collapse=" ")
 reloadQuery <- gsub(':start_dt',reloadStart,reloadQuery)
 reloadQuery <- gsub(':end_dt',reloadEnd,reloadQuery); reloadQuery
 reloaded <- dbSendQuery(c,reloadQuery)
-
-#pull new data
-source("load.R")
-head(df,20)
-minDate
-maxDate
-days

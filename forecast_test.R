@@ -1,29 +1,54 @@
 library('forecast')
 library('parallel')
+library(xlsx)
+
 ###############################################
 #bootstrap
-year <- as.integer(format(minDate.lim,"%Y"))
-dayofYear <- as.integer(format(minDate.lim,"%j"))
+st.year <- as.integer(format(minDate.lim,"%Y")); st.year
+st.dayofYear <- as.integer(format(minDate.lim,"%j")); .st.dayofYear
 
-mobile.ts <- ts(mobile.Date$gmb, frequency=52*7, start=c(year,dayofYear))
+
+#mobile forecast
+mobile.ts <- ts(mobileAgg$gmb, frequency=52*7, start=c(st.year,st.dayofYear))
 arima_mobile <- auto.arima(mobile.ts,seasonal=TRUE)
+mobile.fcst <- data.frame(forecast(arima_mobile))
+write.xlsx(mobile.fcst,"c:/fcstAgg2.xlsx",sheetName="mobile",append=TRUE)
 
-#data.frame(forecast(arima_mobile, h=4))
+#create data.frame for forecast
+gmb_plan <- mobile.fcst$Point.Forecast
+trans_dt <- c(maxDate)+sequence(nrow(mobile.fcst))
+model_dt <- Sys.Date()
+country <- 'All'
+device <- 'AllMobile'
+mobile.fcst2 <- data.frame(trans_dt,model_dt,country,device,gmb_plan); head(mobile.fcst2)
 
-au <- ts(mobile.DateCntry[mobile.DateCntry$country=='AU',]$gmb,frequency=364,start=c(year,dayofYear))
-de <- ts(mobile.DateCntry[mobile.DateCntry$country=='DE',]$gmb,frequency=364,start=c(year,dayofYear))
-uk <- ts(mobile.DateCntry[mobile.DateCntry$country=='UK',]$gmb,frequency=364,start=c(year,dayofYear))
-us <- ts(mobile.DateCntry[mobile.DateCntry$country=='US',]$gmb,frequency=364,start=c(year,dayofYear))
-ca <- ts(mobile.DateCntry[mobile.DateCntry$country=='CA',]$gmb,frequency=364,start=c(year,dayofYear))
-otherCntry <- ts(mobile.DateCntry[mobile.DateCntry$country=='Other',]$gmb,frequency=364,start=c(year,dayofYear))
+#add actuals to data.frame
+trans_dt <- mobileAgg$created_dt
+gmb_plan <- mobileAgg$gmb
+model_dt <- as.Date('0000-01-01')
+mobileAgg2 <- data.frame(trans_dt,model_dt,country,device,gmb_plan); head(mobileAgg2)
 
-iphone <- ts(mobile.DatePlat[mobile.DatePlat$platform=='iPhone App',]$gmb,frequency=364,start=c(year,dayofYear))
-ipad <- ts(mobile.DatePlat[mobile.DatePlat$platform=='iPad App',]$gmb,frequency=364,start=c(year,dayofYear))
-android <- ts(mobile.DatePlat[mobile.DatePlat$platform=='AndroidApp',]$gmb,frequency=364,start=c(year,dayofYear))
-mweb <- ts(mobile.DatePlat[mobile.DatePlat$platform=='Mobile Web',]$gmb,frequency=364,start=c(year,dayofYear))
-fsom <- ts(mobile.DatePlat[mobile.DatePlat$platform=='FSoM',]$gmb,frequency=364,start=c(year,dayofYear))
-otherMob <- ts(mobile.DatePlat[mobile.DatePlat$platform=='Other Mobile',]$gmb,frequency=364,start=c(year,dayofYear))
+#append
+mobile.up <- rbind(mobileAgg2,mobile.fcst2)
+write.xlsx(mobile.up,"c:/mobilefcst2.xlsx",sheetName="test",append=TRUE)
 
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+#force into time series
+au <- ts(mobile.DateCntry[mobile.DateCntry$country=='AU',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
+de <- ts(mobile.DateCntry[mobile.DateCntry$country=='DE',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
+uk <- ts(mobile.DateCntry[mobile.DateCntry$country=='UK',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
+us <- ts(mobile.DateCntry[mobile.DateCntry$country=='US',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
+ca <- ts(mobile.DateCntry[mobile.DateCntry$country=='CA',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
+otherCntry <- ts(mobile.DateCntry[mobile.DateCntry$country=='Other',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
+
+iphone <- ts(mobile.DatePlat[mobile.DatePlat$platform=='iPhone App',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
+ipad <- ts(mobile.DatePlat[mobile.DatePlat$platform=='iPad App',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
+android <- ts(mobile.DatePlat[mobile.DatePlat$platform=='AndroidApp',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
+mweb <- ts(mobile.DatePlat[mobile.DatePlat$platform=='Mobile Web',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
+fsom <- ts(mobile.DatePlat[mobile.DatePlat$platform=='FSoM',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
+otherMob <- ts(mobile.DatePlat[mobile.DatePlat$platform=='Other Mobile',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
+
+#run forecast
 au.arima <- auto.arima(au, seasonal=TRUE)
 de.arima <- auto.arima(de, seasonal=TRUE)
 uk.arima <- auto.arima(uk, seasonal=TRUE)
@@ -38,6 +63,34 @@ mweb.arima <- auto.arima(mweb, seasonal=TRUE)
 fsom.arima <- auto.arima(fsom, seasonal=TRUE)
 otherMob.arima <- auto.arima(otherMob, seasonal=TRUE)
 
+#push forecast into dataframe
+au.fcst <- data.frame(forecast(au.arima))
+us.fcst <- data.frame(forecast(us.arima))
+uk.fcst <- data.frame(forecast(uk.arima))
+de.fcst <- data.frame(forecast(de.arima))
+ca.fcst <- data.frame(forecast(ca.arima))
+otherCntry.fcst <- data.frame(forecast(otherCntry.arima))
+
+iphone.fcst <- data.frame(forecast(iphone.arima))
+ipad.fcst <- data.frame(forecast(ipad.arima))
+android.fcst <- data.frame(forecast(android.arima))
+mweb.fcst <- data.frame(forecast(mweb.arima))
+fsom.fcst <- data.frame(forecast(fsom.arima))
+otherMob.fcst <- data.frame(forecast(otherMob.arima))
+
+#write into excel
+write.xlsx(au.fcst,"c:/fcstAgg2.xlsx",sheetName="au",append=TRUE)
+write.xlsx(us.fcst,"c:/fcstAgg2.xlsx",sheetName="us",append=TRUE)
+write.xlsx(uk.fcst,"c:/fcstAgg2.xlsx",sheetName="uk",append=TRUE)
+write.xlsx(de.fcst,"c:/fcstAgg2.xlsx",sheetName="de",append=TRUE)
+write.xlsx(ca.fcst,"c:/fcstAgg2.xlsx",sheetName="ca",append=TRUE)
+write.xlsx(otherCntry.fcst,"c:/fcstAgg2.xlsx",sheetName="otherCntry",append=TRUE)
+write.xlsx(iphone.fcst,"c:/fcstAgg2.xlsx",sheetName="iphone",append=TRUE)
+write.xlsx(ipad.fcst,"c:/fcstAgg2.xlsx",sheetName="ipad",append=TRUE)
+write.xlsx(android.fcst,"c:/fcstAgg2.xlsx",sheetName="android",append=TRUE)
+write.xlsx(mweb.fcst,"c:/fcstAgg2.xlsx",sheetName="mweb",append=TRUE)
+write.xlsx(fsom.fcst,"c:/fcstAgg2.xlsx",sheetName="fsom",append=TRUE)
+write.xlsx(otherMob.fcst,"c:/fcstAgg2.xlsx",sheetName="otherMob",append=TRUE)
 ###############################################
 
 

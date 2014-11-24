@@ -8,7 +8,7 @@ sqlQuery <- gsub(':table',sqlTable,sqlQuery); sqlQuery
 
 #load data
 df <- dbGetQuery(c,sqlQuery)
-df2 <- df
+df.bk <- df
 
 #check
 df$created_dt <- as.Date(df$created_dt)
