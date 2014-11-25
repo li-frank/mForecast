@@ -5,7 +5,9 @@ library(xlsx)
 ###############################################
 #bootstrap
 st.year <- as.integer(format(minDate.lim,"%Y")); st.year
-st.dayofYear <- as.integer(format(minDate.lim,"%j")); .st.dayofYear
+st.dayofYear <- as.integer(format(minDate.lim,"%j")); st.dayofYear
+
+function()
 
 
 #mobile forecast
@@ -22,17 +24,84 @@ country <- 'All'
 device <- 'AllMobile'
 mobile.fcst2 <- data.frame(trans_dt,model_dt,country,device,gmb_plan); head(mobile.fcst2)
 
-#add actuals to data.frame
+#create data.frame for actuals
 trans_dt <- mobileAgg$created_dt
 gmb_plan <- mobileAgg$gmb
 model_dt <- as.Date('0000-01-01')
 mobileAgg2 <- data.frame(trans_dt,model_dt,country,device,gmb_plan); head(mobileAgg2)
 
-#append
-mobile.up <- rbind(mobileAgg2,mobile.fcst2)
-write.xlsx(mobile.up,"c:/mobilefcst2.xlsx",sheetName="test",append=TRUE)
+# #append
+ mobile.up <- rbind(mobileAgg2,mobile.fcst2)
+ write.xlsx(mobile.up,"c:/mobilefcst3.xlsx",sheetName="test",append=TRUE)
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+iphone <- ts(mobile.DatePlat[mobile.DatePlat$platform=='iPhone App',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
+iphone.arima <- auto.arima(iphone, seasonal=TRUE)
+iphone.fcst <- data.frame(forecast(iphone.arima))
+
+gmb_plan <- iphone.fcst$Point.Forecast
+trans_dt <- c(maxDate)+sequence(nrow(iphone.fcst))
+model_dt <- Sys.Date()
+country <- 'All'
+device <- 'iPhone'
+iphone.fcst2 <- data.frame(trans_dt,model_dt,country,device,gmb_plan); head(iphone.fcst2)
+
+#create data.frame for actuals
+trans_dt <- mobile.DatePlat[mobile.DatePlat$platform=='iPhone App',]$created_dt
+gmb_plan <- mobile.DatePlat[mobile.DatePlat$platform=='iPhone App',]$gmb
+model_dt <- as.Date('0000-01-01')
+iphoneAgg2 <- data.frame(trans_dt,model_dt,country,device,gmb_plan); head(iphoneAgg2)
+
+iphone.up <- rbind(iphoneAgg2,iphone.fcst2)
+write.xlsx(iphone.up,"c:/iphonefcst.xlsx",sheetName="test",append=TRUE)
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+android <- ts(mobile.DatePlat[mobile.DatePlat$platform=='AndroidApp',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
+android.arima <- auto.arima(android, seasonal=TRUE)
+android.fcst <- data.frame(forecast(android.arima))
+
+gmb_plan <- android.fcst$Point.Forecast
+trans_dt <- c(maxDate)+sequence(nrow(android.fcst))
+model_dt <- Sys.Date()
+country <- 'All'
+device <- 'android'
+android.fcst2 <- data.frame(trans_dt,model_dt,country,device,gmb_plan); head(android.fcst2)
+
+#create data.frame for actuals
+trans_dt <- mobile.DatePlat[mobile.DatePlat$platform=='AndroidApp',]$created_dt
+gmb_plan <- mobile.DatePlat[mobile.DatePlat$platform=='AndroidApp',]$gmb
+model_dt <- as.Date('0000-01-01')
+androidAgg2 <- data.frame(trans_dt,model_dt,country,device,gmb_plan); head(androidAgg2)
+
+android.up <- rbind(androidAgg2,android.fcst2)
+write.xlsx(android.up,"c:/androidfcst.xlsx",sheetName="test",append=TRUE)
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+mweb <- ts(mobile.DatePlat[mobile.DatePlat$platform=='Mobile Web',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
+mweb.arima <- auto.arima(mweb, seasonal=TRUE)
+mweb.fcst <- data.frame(forecast(mweb.arima))
+
+gmb_plan <- mweb.fcst$Point.Forecast
+trans_dt <- c(maxDate)+sequence(nrow(mweb.fcst))
+model_dt <- Sys.Date()
+country <- 'All'
+device <- 'mweb'
+mweb.fcst2 <- data.frame(trans_dt,model_dt,country,device,gmb_plan); head(mweb.fcst2)
+
+#create data.frame for actuals
+trans_dt <- mobile.DatePlat[mobile.DatePlat$platform=='Mobile Web',]$created_dt
+gmb_plan <- mobile.DatePlat[mobile.DatePlat$platform=='Mobile Web',]$gmb
+model_dt <- as.Date('0000-01-01')
+mwebAgg2 <- data.frame(trans_dt,model_dt,country,device,gmb_plan); head(mwebAgg2)
+
+mweb.up <- rbind(mwebAgg2,mweb.fcst2)
+write.xlsx(mweb.up,"c:/mwebfcst.xlsx",sheetName="test",append=TRUE)
+
+
+
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+
 #force into time series
 au <- ts(mobile.DateCntry[mobile.DateCntry$country=='AU',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
 de <- ts(mobile.DateCntry[mobile.DateCntry$country=='DE',]$gmb,frequency=364,start=c(st.year,st.dayofYear))
