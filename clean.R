@@ -1,4 +1,4 @@
-library(plyr); library(dplyr)
+library(plyr)
 #limit data to last 3 years
 minDate.lim <- maxDate - 3*364 + 1
 df.lim <- df[df$created_dt >= minDate.lim,]
