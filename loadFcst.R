@@ -8,6 +8,20 @@ st.year <- as.integer(format(minDate.lim,"%Y")); st.year
 st.dayofYear <- as.integer(format(minDate.lim,"%j")); st.dayofYear
 
 ##################################
+#mobile arima
+mobile.ts <- ts(mobileAgg[,2], frequency=52*7, start=c(st.year, st.dayofYear))
+system.time(mobile.arima <- auto.arima(mobile.ts, seasonal=TRUE))
+system.time(mobile.fcst <- data.frame(forecast(mobile.arima)))
+trans_dt <- c(maxDate)+sequence(fcstLeng)
+mobile.fcst.df <- data.frame(trans_dt,"Mobile",mobile.fcst$Point.Forecast[1:fcstLeng],Sys.Date())
+colnames(mobile.fcst.df) <- c("trans_dt","slice","gmb","model_dt"); head(mobile.fcst.df)
+
+mobile.actl <- data.frame(mobileAgg$created_dt,"Mobile",mobileAgg$gmb,"1900-01-01")
+colnames(mobile.actl) <- c("trans_dt","slice","gmb","model_dt")
+mobileGMB <- rbind(mobile.fcst.df,mobile.actl)
+mobileGMB <- mobileGMB[with(mobileGMB, order(trans_dt)), ]
+write.csv(mobileGMB,"mobileGMB.csv")
+
 #country arima
 splits <- list(mobile.DateCntry$country)
 split <- split(mobile.DateCntry,splits)
@@ -70,6 +84,7 @@ colnames(plat.actl) <- c("trans_dt","plat","gmb","model_dt")
 platGMB <- rbind(plat.fcst.df,plat.actl)
 platGMB <- platGMB[with(platGMB, order(trans_dt)), ]
 ##################################
+
 
 #country
 splits <- list(mobile.DateCntry$country)
