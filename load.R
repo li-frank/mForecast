@@ -25,4 +25,4 @@ days <- as.numeric(maxDate - minDate + 1); days
 
 
 ##autorefresh numbers
-
+dbDisconnect(c)
