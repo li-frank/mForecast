@@ -1,18 +1,20 @@
 #only load existing data: Source("load.R")
 rm(list = ls())
 
-start1 <- proc.time()
-
+start <- proc.time()
 source("update.R")
 source("load.R")
+UpdateTime <- proc.time()-start; UpdateTime
 
-start2 <- proc.time()
+start <- proc.time()
 source("clean.R")
-
-UpdateTime <- proc.time()-start1; UpdateTime
-cleanTime <- proc.time()-start2; cleanTime
-
+cleanTime <- proc.time()-start; cleanTime
 #source("plots.R")
-#source("forecast.R")
 
-source("loadFcst2.R")
+start <- proc.time()
+source("arimaFcst.R")
+fcstTime <- start - proc.time(); fcstTime
+
+start <- proc.time()
+source("TDtableLoad.R")
+loadTime <- start - proc.time(); loadTime
