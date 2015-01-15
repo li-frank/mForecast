@@ -1,28 +1,20 @@
 library('ebaytd')
 c <- teradataConnect()
 
-#setup query & table
-sqlTable <- 'p_csi_tbs_t.fl_dly_mGMBforecast_s1'
-sqlQuery <- 'select * from :table'
-sqlQuery <- gsub(':table',sqlTable,sqlQuery); sqlQuery
+#pull actuals
+actualTable <- 'p_csi_tbs_t.fl_dly_mGMB_actuals'
+actualQuery <- "select * from :table"
+actualPull <- gsub(':table',actualTable,actualQuery); actualPull
 
 #load data
-df <- dbGetQuery(c,sqlQuery)
-df.bk <- df
+actual0 <- dbGetQuery(c,actualPull)
+actual0.bk <- actual0
 
-#check
-df$created_dt <- as.Date(df$created_dt)
-minDate <- min(df$created_dt); minDate
-maxDate <- max(df$created_dt); maxDate
-days <- as.numeric(maxDate - minDate + 1); days
+#pull forecast
+fcstTable <- 'p_csi_tbs_t.fl_mobileFcst'
+fcstQuery <- "select * from :table where model_dt>'1900-01-01'"
+fcstPull <- gsub(':table',fcstTable,fcstQuery); fcstPull
+fcst0 <- dbGetQuery(c,fcstPull)
+fcst0.bk <- fcst0
 
-
-#incomplete- load query directly from github
-#library(RCurl)
-#wklyGMBurl <- 'https://github.com/li-frank/mForecast/blob/master/wkly_mGMB.sql'
-#test <- getURL(wklyGMBur)
-
-
-
-##autorefresh numbers
 dbDisconnect(c)

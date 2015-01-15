@@ -1,29 +1,29 @@
 library(plyr)
 #limit data to last 3 years
 minDate.lim <- maxDate - 3*364 + 1
-df.lim <- df[df$created_dt >= minDate.lim,]
+actual0.lim <- actual0[actual0$trans_dt >= minDate.lim,]
 
-mobile.lim <- df.lim[df.lim$platform != "Core Site on PC",]
-mobile.unlim <- df[df$platform != "Core Site on PC",]
+mobile.lim <- actual0.lim[actual0.lim$platform != "Core Site on PC",]
+mobile.unlim <- actual0[actual0$platform != "Core Site on PC",]
 
 ##mobile gmb: platform over time
 mobile.DatePlat <- ddply(mobile.lim,
-                         .(created_dt,platform),
-                         summarise,gmb=sum(gmb_plan))
+                         .(trans_dt,platform),
+                         summarise,gmb=sum(gmb))
 
 ##mobile gmb: country over time
 mobile.DateCntry <- ddply(mobile.lim,
-                         .(created_dt,country),
-                         summarise,gmb=sum(gmb_plan))
+                         .(trans_dt,country),
+                         summarise,gmb=sum(gmb))
 
-##mobile gmb: platform & country over time
+##mobile gmb: platform & country over time*****************************
 mobile.PlatCntry <- ddply(mobile.lim,
-                          .(created_dt,country,platform),
-                          summarise,gmb=sum(gmb_plan))
+                          .(trans_dt,country,platform),
+                          summarise,gmb=sum(gmb))
 
 ##mobile aggregate
 mobileAgg <- ddply(mobile.lim,
-                          .(created_dt),
-                          summarise,gmb=sum(gmb_plan))
+                          .(trans_dt),
+                          summarise,gmb=sum(gmb))
 
 #add GMB share: share of site and share of country

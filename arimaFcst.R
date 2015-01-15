@@ -15,10 +15,10 @@ platCntry.split <- split(mobile.PlatCntry, splits)
 platCntry.ts <- lapply(platCntry.split, function(x) ts(x[,4], frequency=52*7, start=c(st.year,st.dayofYear)))
 proc.time()-start1
 
-#start1 <- proc.time()
-#system.time(platCntry.arima <- lapply(platCntry.ts, function(x) auto.arima(x,seasonal=TRUE,D=1)))
-#system.time(platCntry.fcst <- lapply(platCntry.arima, function(x) data.frame(forecast(x))))
-#proc.time()-start1
+start1 <- proc.time()
+system.time(platCntry.arima <- lapply(platCntry.ts, function(x) auto.arima(x,seasonal=TRUE,D=1)))
+system.time(platCntry.fcst <- lapply(platCntry.arima, function(x) data.frame(forecast(x))))
+proc.time()-start1
 
 ######
 start1 <- proc.time()
@@ -33,11 +33,11 @@ combined <- NULL
 
 for (i in cntrys){
   for (j in pltfrms){
-   # fcst <- data.frame(trans_dt,
-    #                   i,j,
-     #                  platCntry.fcst[[paste0(i,".",j)]]$Point.Forecast[1:fcstLeng],
-      #                 Sys.Date())
-    #colnames(fcst) <- c("trans_dt","country","platform","gmb","model_dt")
+    fcst <- data.frame(trans_dt,
+                       i,j,
+                       platCntry.fcst[[paste0(i,".",j)]]$Point.Forecast[1:fcstLeng],
+                       Sys.Date())
+    colnames(fcst) <- c("trans_dt","country","platform","gmb","model_dt")
     actual <- data.frame(subset(mobile.PlatCntry, (country==i) & (platform==j))$created_dt,
                          i,j,
                          subset(mobile.PlatCntry, (country==i) & (platform==j))$gmb,
@@ -46,4 +46,7 @@ for (i in cntrys){
     combined <-  rbind(fcst,actual,combined)
   }
 }
+
+combined <- rbind(combined,fcst0)
+  
 proc.time()-start1
