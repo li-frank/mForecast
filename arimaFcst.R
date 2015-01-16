@@ -38,7 +38,7 @@ for (i in cntrys){
                        platCntry.fcst[[paste0(i,".",j)]]$Point.Forecast[1:fcstLeng],
                        Sys.Date())
     colnames(fcst) <- c("trans_dt","country","platform","gmb","model_dt")
-    actual <- data.frame(subset(mobile.PlatCntry, (country==i) & (platform==j))$created_dt,
+    actual <- data.frame(subset(mobile.PlatCntry, (country==i) & (platform==j))$trans_dt,
                          i,j,
                          subset(mobile.PlatCntry, (country==i) & (platform==j))$gmb,
                          "1900-01-01")
