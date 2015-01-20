@@ -6,8 +6,8 @@ head(actual0)
 
 #check
 actual0$trans_dt <- as.Date(actual0$trans_dt)
-minDate <- min(actual0$trans_dt); minDate
-maxDate <- max(actual0$trans_dt); maxDate
+minDate <- as.Date(min(actual0$trans_dt)); minDate
+maxDate <- as.Date(max(actual0$trans_dt)); maxDate
 days <- as.numeric(maxDate - minDate + 1); days
 
 #remove, reload
